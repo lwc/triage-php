@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * ZeroMQMessagePack Wrapper
+ */
 class ZeroMQMessagePackClient
 {
 	private $_socket;
@@ -32,30 +34,3 @@ class ZeroMQMessagePackClient
 		return $msgPack->pack($data);
 	}
 }
-
-class TriageClient extends ZeroMQMessagePackClient
-{
-	public function logError($error)
-	{
-		$this->send(array(
-				'error' => $error,
-				'time' => time()
-			));
-
-		return $this;
-	}
-
-	public function logMessage($level, $message)
-	{
-		$this->send(array(
-				'message' => $message,
-				'level' => $level,
-				'time' => time()
-			));
-
-		return $this;
-	}
-}
-
-$client = new TriageClient('tcp://10.0.1.32:5001');
-
