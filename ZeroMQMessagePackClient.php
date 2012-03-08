@@ -6,9 +6,9 @@ class ZeroMQMessagePackClient
 {
 	private $_socket;
 
-	public static function construct($uri)
+	public static function construct($args)
 	{
-		return new self($uri);
+		return new self($args['uri']);
 	}
 
 	public function __construct($uri)
@@ -23,7 +23,28 @@ class ZeroMQMessagePackClient
 		$this->_socket->connect($uri);
 	}
 
-	public function send($error)
+	public function logError($error)
+	{
+		$this->_send(array(
+				'error' => $error,
+				'time' => time()
+			));
+
+		return $this;
+	}
+
+	public function logMessage($level, $message)
+	{
+		$this->_send(array(
+				'message' => $message,
+				'level' => $level,
+				'time' => time()
+			));
+
+		return $this;
+	}
+
+	private function _send($error)
 	{
 		$this->_socket->send($this->_pack($error), ZMQ::MODE_NOBLOCK);
 	}
